@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Error registering user");
+    console.error("Error registering user", error);
     return Response.json(
       { success: false, message: "Failed to register user" },
       { status: 500 },
