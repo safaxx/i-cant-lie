@@ -6,8 +6,8 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({ req: request });
   const { pathname } = request.nextUrl;
 
-  if (token && (pathname === "/" || pathname.startsWith("/signin") || pathname.startsWith("/signup"))) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (token && (pathname.startsWith("/signin") || pathname.startsWith("/signup"))) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   if (pathname.startsWith("/dashboard") && !token) {

@@ -1,101 +1,221 @@
 "use client";
 
-import { useState } from "react";
-import type { FormEvent } from "react";
+import React, { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { useDebounceValue } from "usehooks-ts";
+import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signInSchema } from "@/schemas/signInSchema";
+import { signUpSchema } from "@/schemas/signupSchema";
+import axios, { AxiosError } from "axios";
+import ApiResponse from "@/types/ApiResponse";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
-export default function SignInPage() {
+const page = () => {
+  const [username, setUsername] = useState("");
+  const [validUsernameMsg, setValidUsernameMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const debouncedUsername = useDebounceValue(username, 300);
   const router = useRouter();
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    setIsSubmitting(true);
+  //zod impl
 
-    const formData = new FormData(event.currentTarget);
-    const identifier = formData.get("identifier");
-    const password = formData.get("password");
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
 
-    if (typeof identifier !== "string" || typeof password !== "string") {
-      setError("Enter your email or username and password.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const result = await signIn("credentials-login", {
-        identifier,
-        password,
-        redirect: false,
-        callbackUrl: "/dashboard",
-      });
-
-      if (result?.error) {
-        setError("Sign-in failed. Check your credentials and try again.");
-        return;
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (debouncedUsername) {
+        setLoading(true);
+        setValidUsernameMsg("");
+        try {
+          const response = await axios.get(
+            `/api/validate-username?username=${debouncedUsername}`,
+          );
+          setValidUsernameMsg(response.data.message);
+        } catch (error) {
+          setValidUsernameMsg("Error checking username");
+        } finally {
+          setLoading(false);
+        }
       }
+    };
+    checkUsername();
+  }, [debouncedUsername]);
 
-      router.push(result?.url ?? "/dashboard");
-      router.refresh();
-    } catch {
-      setError("Unable to sign in. Please try again.");
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    console.log(data);
+    setSubmitting(true);
+    try {
+      const response = await axios.post("/api/signup", data);
+      toast.add({
+        type: "success",
+        title: "Sign up successfull",
+        description: response.data.message,
+      });
+      router.replace(`/verify/${username}`);
+    } catch (error) {
+      console.error("Error while signing up", error);
+      const axiosError = error as AxiosError<ApiResponse>;
+      let errorMsg = axiosError.response?.data.message;
+      toast.add({
+        type: "error",
+        title: "Sign up failed",
+        description: errorMsg,
+        priority: "high",
+      });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
-  }
-
+  };
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm space-y-5 rounded-xl bg-white p-8 shadow"
-      >
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Sign in</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            Use your email or username and password.
-          </p>
-        </div>
+    // <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    //   <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    //     <div className="text-center">
+    //       <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+    //         Join ICL
+    //       </h1>
+    //       <p className="mb-4">Sign up to send what you can't say</p>
+    //     </div>
+    //     <form onSubmit={form.handleSubmit(onSubmit)}></form>
+    //   </div>
+    // </div>
 
-        <label className="block space-y-1 text-sm font-medium text-zinc-700">
-          Email or username
-          <input
-            name="identifier"
-            type="text"
-            autoComplete="username"
-            required
-            className="w-full rounded-md border border-zinc-300 px-3 py-2"
-          />
-        </label>
+    <Card className="w-full sm:max-w-md">
+      <CardHeader>
+        <CardTitle>Join ICL!</CardTitle>
+        <CardDescription>Sign up to send what you can't say</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form id="form-rhf-input" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="username"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-username">
+                    Username
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-input-username"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="skh2001"
+                    autoComplete="username"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setUsername(e.target.value);
+                    }}
+                  />
+                  <FieldDescription>
+                    This is your public display name. Must be between 3 and 10
+                    characters. Must only contain letters, numbers, and
+                    underscores.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        <label className="block space-y-1 text-sm font-medium text-zinc-700">
-          Password
-          <input
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            className="w-full rounded-md border border-zinc-300 px-3 py-2"
-          />
-        </label>
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-username">
+                    Email
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-input-username"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="s.k@gmail.com"
+                    autoComplete="email"
+                  />
+                  <FieldDescription></FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        {error && (
-          <p role="alert" className="text-sm text-red-600">
-            {error}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full rounded-md bg-zinc-900 px-4 py-2 font-medium text-white hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSubmitting ? "Signing in..." : "Sign in"}
-        </button>
-      </form>
-    </main>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-input-username">
+                    Password
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-input-username"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="*****"
+                    autoComplete="password"
+                  />
+                  <FieldDescription></FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field orientation="horizontal">
+          <Button type="submit" form="form-rhf-input" disabled={submitting}>
+            {submitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing you up...
+              </>
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
+          <div>
+            <p>
+              Already a member? <Link href={"/api/signin"}>Log In</Link>
+            </p>
+          </div>
+        </Field>
+      </CardFooter>
+    </Card>
   );
-}
+};
+
+export default page;
