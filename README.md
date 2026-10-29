@@ -1,32 +1,23 @@
 # icl — I Can't Lie
 
-icl is an anonymous messaging app for sharing honest notes, compliments, confessions, and questions. Create an account, share your profile link, and read messages in your dashboard.
+An anonymous messaging app for sharing honest notes, compliments, confessions, and questions. Create a profile link, share it with friends, and receive messages in your inbox.
 
-## Getting started
+## Tech stack
 
-Install dependencies and start the development server:
+- **Next.js App Router** and **React** for the full-stack web application
+- **TypeScript** for typed components, API routes, and shared data models
+- **Tailwind CSS** and **shadcn-style UI components** for responsive interface styling
+- **MongoDB** with **Mongoose** for data storage and modeling
+- **NextAuth.js** for credential-based authentication and JWT sessions
+- **React Hook Form** and **Zod** for form state and validation
+- **Resend** and **React Email** for verification emails
+- **Vercel AI SDK** with **Google Gemini** for message suggestions
+- **Axios** for client-side API requests
 
-```bash
-npm install
-npm run dev
-```
+## Highlights
 
-Open [http://localhost:3000](http://localhost:3000).
-
-Add these values to `.env.local`:
-
-```env
-MONGODB_URI=
-NEXTAUTH_SECRET=
-RESEND_API_KEY=
-GOOGLE_GENERATIVE_AI_API_KEY=
-```
-
-MongoDB, NextAuth, and Resend are used for app data, authentication, and verification emails. The Google AI key enables message suggestions.
-
-## Scripts
-
-- `npm run dev` — start the development server
-- `npm run build` — create a production build
-- `npm run start` — serve the production build
-- `npm run lint` — run ESLint
+- Account signup, email verification, and username availability checks
+- Shareable profile links and anonymous message inbox
+- Message management and controls for accepting messages
+- AI-generated suggestions spanning confessions, compliments, and questions
+- Responsive landing, authentication, and dashboard experiences
