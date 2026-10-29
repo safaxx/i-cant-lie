@@ -117,14 +117,18 @@ const SignupPage = () => {
     }
   };
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-100 px-4 py-10">
-      <Card className="w-full max-w-md rounded-2xl border border-zinc-200/80 bg-white shadow-xl shadow-zinc-900/5">
-        <CardHeader className="gap-2 px-6 pt-8 text-center sm:px-8">
+    <div className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden bg-[#faf9f6] px-4 py-12">
+      <div
+        aria-hidden="true"
+        className="absolute left-1/2 top-1/2 size-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-200/50 blur-3xl sm:size-[30rem]"
+      />
+      <Card className="relative w-full max-w-md rounded-2xl border border-zinc-200/80 bg-white shadow-xl shadow-zinc-900/5">
+        <CardHeader className="gap-3 px-6 pt-8 text-center sm:px-8">
           <CardTitle className="text-3xl font-bold tracking-tight">
-            Join ICL
+            Make room for honesty.
           </CardTitle>
-          <CardDescription className="text-base">
-            Sign up to send what you can&apos;t say
+          <CardDescription className="text-sm leading-6">
+            Create your link and give people a way to say what they really mean.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-6 pb-7 sm:px-8">
@@ -247,7 +251,7 @@ const SignupPage = () => {
               type="submit"
               form="form-rhf-input"
               disabled={submitting}
-              className="h-11 w-full rounded-xl text-sm font-semibold"
+              className="h-11 w-full rounded-xl bg-zinc-950 text-sm font-semibold text-white hover:bg-zinc-800"
             >
               {submitting ? (
                 <>

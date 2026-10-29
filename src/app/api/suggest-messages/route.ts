@@ -11,7 +11,7 @@ export async function POST() {
 
   try {
     const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Oooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: 'What’s a hobby you’ve recently started?||If you could have dinner with any historical figure, who would it be?||What’s a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
+      "Write exactly three short, natural message suggestions for an anonymous social messaging app. Mix the styles: include a kind or specific compliment, a lighthearted personal confession or secret (such as admitting a past crush), and an engaging question. Suggestions should sound like something a real person would send, can begin with 'icl', and should not all be questions. Keep them warm, positive, respectful, and suitable for a broad audience; avoid pressure, cruelty, sexual content, and sensitive personal topics. Return only the three suggestions as a single string separated by '||', with no numbering, labels, or extra explanation. Example format: 'icl, your paintings always make my day||icl, I had a little crush on you back in school||What is something you wish more people knew about you?'.";
 
     const result = streamText({
       model: google("gemini-3.5-flash-lite"),

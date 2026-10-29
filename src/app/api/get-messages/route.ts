@@ -27,15 +27,38 @@ export async function GET(req: Request) {
     //aggregation pipelines
     const user = await UserModel.aggregate([
       { $match: { _id: userId } },
-      { $unwind: "$messages" },
+      {
+        $unwind: {
+          path: "$messages",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       { $sort: { "messages.createdAt": -1 } },
       { $group: { _id: "$_id", messages: { $push: "$messages" } } },
+      {
+        $project: {
+          messages: {
+            $filter: {
+              input: "$messages",
+              as: "message",
+              cond: { $ne: ["$$message", null] },
+            },
+          },
+        },
+      },
     ]);
     if (!user || user.length === 0) {
       return apiResponse({ success: false, message: "User not found" }, 404);
     }
     console.log(user);
-    return apiResponse({ success: true, message: user[0].messages }, 200);
+    return apiResponse(
+      {
+        success: true,
+        message: "Messages fetched successfully",
+        messages: user[0].messages,
+      },
+      200,
+    );
   } catch (error) {
     console.error("Error getting messages", error);
     return apiResponse(
