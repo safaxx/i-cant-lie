@@ -3,13 +3,12 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import { apiResponse } from "@/lib/apiResponse";
-import mongoose from "mongoose";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { messageid: string } },
+  { params }: { params: Promise<{ messageid: string }> },
 ) {
-  const messageId = params.messageid;
+  const { messageid: messageId } = await params;
   await dbConnect();
   const session = await getServerSession(authOptions);
 
@@ -38,7 +37,7 @@ export async function DELETE(
       );
     }
     return apiResponse(
-      { success: true, message: "Message delete successfully" },
+      { success: true, message: "Message deleted successfully!" },
       200,
     );
   } catch (error) {
