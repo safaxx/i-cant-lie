@@ -6,6 +6,7 @@ export default interface ApiResponse {
   success: boolean;
   message: string;
   user?: User;
+  username?: string;
   isAcceptingMessages?: boolean;
   messages?: Array<Message>;
 }

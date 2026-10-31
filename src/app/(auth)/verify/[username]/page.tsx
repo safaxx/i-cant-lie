@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/toast";
 import { verifySchema } from "@/schemas/verifySchema";
@@ -41,6 +41,13 @@ const VerifyAccount = () => {
         username: params.username,
         code: data.code,
       });
+      if (response.status === 403) {
+        toast.add({
+          title: "Success",
+          description: response.data.message,
+        });
+        return;
+      }
       toast.add({
         title: "Success",
         description: response.data.message,
@@ -85,7 +92,7 @@ const VerifyAccount = () => {
                       className="text-sm font-semibold"
                       htmlFor="form-rhf-input-code"
                     >
-                    Verification Code
+                      Verification Code
                     </FieldLabel>
                     <Input
                       {...field}

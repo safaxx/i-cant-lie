@@ -103,7 +103,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (session?.user.username) {
       setProfileURL(
-        `${window.location.origin}/you/${encodeURIComponent(session.user.username)}`,
+        `${window.location.origin}/u/${encodeURIComponent(session.user.username)}`,
       );
     }
   }, [session?.user.username]);
