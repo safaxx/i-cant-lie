@@ -9,4 +9,5 @@ export default interface ApiResponse {
   username?: string;
   isAcceptingMessages?: boolean;
   messages?: Array<Message>;
+  suggestions?: string[];
 }

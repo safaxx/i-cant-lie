@@ -28,12 +28,14 @@ const Navbar = () => {
           <div className="h-9 w-20" aria-hidden="true" />
         ) : status === "authenticated" ? (
           <div className="flex items-center gap-3 sm:gap-5">
-            <span className="hidden text-sm text-zinc-600 sm:inline">
-
+            <Link
+              href="/dashboard"
+              className="hidden text-sm text-zinc-600 transition-colors hover:text-zinc-900 sm:inline"
+            >
               <span className="font-semibold text-zinc-900">
                 {session.user?.name ?? session.user?.username ?? "there"}
               </span>
-            </span>
+            </Link>
             <Button
               variant="outline"
               onClick={() => signOut()}

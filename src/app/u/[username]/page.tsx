@@ -24,6 +24,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { Sparkles } from "lucide-react";
 
 const SendMessagePage = () => {
   const params = useParams<{ username: string }>();
@@ -33,6 +34,8 @@ const SendMessagePage = () => {
   const [profileUsername, setProfileUsername] = useState(params.username);
   const [profileError, setProfileError] = useState("");
   const [sent, setSent] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
@@ -115,6 +118,49 @@ const SendMessagePage = () => {
         priority: "high",
       });
     }
+  };
+
+  const fetchSuggestions = async () => {
+    setSuggestionsLoading(true);
+    try {
+      const response = await axios.post<ApiResponse>("/api/suggest-messages");
+      if (
+        !response.data.success ||
+        !Array.isArray(response.data.suggestions) ||
+        response.data.suggestions.length !== 3 ||
+        response.data.suggestions.some(
+          (suggestion) => typeof suggestion !== "string" || !suggestion.trim(),
+        )
+      ) {
+        throw new Error(
+          response.data.message || "The server returned invalid suggestions.",
+        );
+      }
+      setSuggestions(response.data.suggestions);
+    } catch (error) {
+      console.error("Error fetching message suggestions", error);
+      const errorMsg = axios.isAxiosError<ApiResponse>(error)
+        ? (error.response?.data.message ?? error.message)
+        : error instanceof Error
+          ? error.message
+          : "Unable to load message suggestions.";
+      toast.add({
+        type: "error",
+        title: "Suggestions unavailable",
+        description: errorMsg,
+        priority: "high",
+      });
+    } finally {
+      setSuggestionsLoading(false);
+    }
+  };
+
+  const useSuggestion = (suggestion: string) => {
+    form.setValue("content", suggestion, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
 
   const renderUnavailable = (title: string, description: string) => (
@@ -224,6 +270,44 @@ const SendMessagePage = () => {
                     )}
                   />
                 </FieldGroup>
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={fetchSuggestions}
+                    disabled={suggestionsLoading}
+                    className="h-9 gap-2 rounded-xl border-zinc-300 bg-white"
+                  >
+                    <Sparkles
+                      className={
+                        suggestionsLoading
+                          ? "size-4 animate-pulse"
+                          : "size-4"
+                      }
+                    />
+                    {suggestionsLoading
+                      ? "Thinking of ideas..."
+                      : "Need an idea?"}
+                  </Button>
+                  {suggestions.length > 0 && (
+                    <div
+                      aria-label="Message suggestions"
+                      className="flex flex-col gap-2"
+                    >
+                      {suggestions.map((suggestion, index) => (
+                        <Button
+                          key={`${index}-${suggestion}`}
+                          type="button"
+                          variant="outline"
+                          onClick={() => useSuggestion(suggestion)}
+                          className="h-auto justify-start rounded-xl border-zinc-200 bg-[#faf9f6] px-3 py-2 text-left text-sm font-normal whitespace-normal"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-xs text-zinc-500">
                     Keep it kind. Your name won’t be attached.

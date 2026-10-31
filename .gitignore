@@ -40,5 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#my notes
-nodes.md
+# my notes
+notes.md
