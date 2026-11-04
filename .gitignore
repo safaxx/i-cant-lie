@@ -42,3 +42,6 @@ next-env.d.ts
 
 # my notes
 notes.md
+
+# Claude Code local settings and worktrees
+.claude/
