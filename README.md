@@ -21,3 +21,4 @@ An anonymous messaging app for sharing honest notes, compliments, confessions, a
 - Message management and controls for accepting messages
 - AI-generated suggestions spanning confessions, compliments, and questions
 - Responsive landing, authentication, and dashboard experiences
+

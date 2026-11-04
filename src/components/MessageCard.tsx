@@ -22,7 +22,7 @@ import {
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
 import { Message } from "@/model/Message";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "./ui/toast";
 import axios from "axios";
 import ApiResponse from "@/types/ApiResponse";
@@ -33,6 +33,19 @@ type MessageCardProps = {
 };
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const messageDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = messageDialogRef.current;
+    if (!dialog) return;
+
+    if (isMessageOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!isMessageOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [isMessageOpen]);
 
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
@@ -64,10 +77,17 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   };
 
   return (
-    <Card className="h-full rounded-2xl border border-zinc-200/80 bg-white shadow-sm shadow-zinc-900/5">
-      <CardHeader className="grid-cols-[1fr_auto]">
+    <Card className="relative h-full rounded-2xl border border-zinc-200/80 bg-white shadow-sm shadow-zinc-900/5 transition-colors hover:bg-lime-50">
+      <button
+        type="button"
+        aria-label="Open full anonymous message"
+        aria-haspopup="dialog"
+        onClick={() => setIsMessageOpen(true)}
+        className="absolute inset-0 z-0 cursor-pointer rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-lime-600"
+      />
+      <CardHeader className="pointer-events-none relative z-10 grid-cols-[1fr_auto]">
         <CardTitle>Anonymous message</CardTitle>
-        <CardAction>
+        <CardAction className="pointer-events-auto relative z-20">
           <AlertDialog>
             <AlertDialogTrigger
               render={
@@ -104,14 +124,54 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
           </AlertDialog>
         </CardAction>
       </CardHeader>
-      <CardContent className="flex-1">
-        <p className="whitespace-pre-wrap break-words leading-relaxed text-zinc-800">
+      <CardContent className="pointer-events-none relative z-10 flex-1">
+        <p className="line-clamp-4 whitespace-pre-wrap break-words leading-relaxed text-zinc-800">
           {message.content}
         </p>
       </CardContent>
-      <CardFooter className="text-xs text-zinc-500">
+      <CardFooter className="pointer-events-none relative z-10 text-xs text-zinc-500">
         {new Date(message.createdAt).toLocaleString()}
       </CardFooter>
+      <dialog
+        ref={messageDialogRef}
+        aria-labelledby={`message-title-${String(message._id)}`}
+        onClose={() => setIsMessageOpen(false)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            setIsMessageOpen(false);
+          }
+        }}
+        className="m-auto max-h-[85vh] w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 text-zinc-950 shadow-2xl backdrop:bg-zinc-950/40"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-zinc-200 px-5 py-4">
+          <div>
+            <h2
+              id={`message-title-${String(message._id)}`}
+              className="text-lg font-bold"
+            >
+              Anonymous message
+            </h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              {new Date(message.createdAt).toLocaleString()}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Close message"
+            onClick={() => setIsMessageOpen(false)}
+            className="shrink-0 text-zinc-500 hover:text-zinc-900"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+        <div className="max-h-[calc(85vh-5rem)] overflow-y-auto px-5 py-4">
+          <p className="whitespace-pre-wrap break-words leading-relaxed text-zinc-800">
+            {message.content}
+          </p>
+        </div>
+      </dialog>
     </Card>
   );
 };
