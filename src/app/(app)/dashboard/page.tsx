@@ -14,8 +14,16 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Copy, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { Copy, LockKeyhole, RefreshCw } from "lucide-react";
 import z from "zod";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Dashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -163,7 +171,43 @@ const Dashboard = () => {
   }
 
   if (!session?.user) {
-    return <div>Please login to see your messages</div>;
+    return (
+      <div className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden bg-[#faf9f6] px-4 py-12">
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 size-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-200/50 blur-3xl sm:size-[30rem]"
+        />
+        <Card className="relative w-full max-w-md rounded-2xl border border-zinc-200/80 bg-white shadow-xl shadow-zinc-900/5">
+          <CardHeader className="items-center gap-3 px-6 pt-8 text-center sm:px-8">
+            <div className="flex size-12 items-center justify-center rounded-full bg-lime-100 text-zinc-900">
+              <LockKeyhole aria-hidden="true" className="size-5" />
+            </div>
+            <CardTitle className="text-2xl font-bold tracking-tight">
+              Your inbox is private
+            </CardTitle>
+            <CardDescription className="text-sm leading-6">
+              Sign in to read the messages people have left for you, or create
+              an account to get started.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 px-6 pb-8 sm:px-8">
+            <Button
+              render={<Link href="/signin" />}
+              className="h-11 w-full rounded-xl bg-zinc-950 text-sm font-semibold text-white hover:bg-zinc-800"
+            >
+              Sign in
+            </Button>
+            <Button
+              variant="outline"
+              render={<Link href="/signup" />}
+              className="h-11 w-full rounded-xl border-zinc-300 text-sm font-semibold"
+            >
+              Create an account
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
