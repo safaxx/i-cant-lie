@@ -10,7 +10,7 @@ An anonymous messaging app for sharing honest notes, compliments, confessions, a
 - **MongoDB** with **Mongoose** for data storage and modeling
 - **NextAuth.js** for credential-based authentication and JWT sessions
 - **React Hook Form** and **Zod** for form state and validation
-- **Resend** and **React Email** for verification emails
+- **Gmail SMTP** with **Nodemailer** and **React Email** for verification emails
 - **Vercel AI SDK** with **Google Gemini** for message suggestions
 - **Axios** for client-side API requests
 
@@ -22,3 +22,10 @@ An anonymous messaging app for sharing honest notes, compliments, confessions, a
 - AI-generated suggestions spanning confessions, compliments, and questions
 - Responsive landing, authentication, and dashboard experiences
 
+## Verification email setup
+
+Set `GMAIL_USER` to the Gmail address used to send verification emails and
+`GMAIL_APP_PASSWORD` to an app password generated for that account. Google
+requires 2-Step Verification to create an app password; do not use your regular
+Gmail password. Configure both values in Vercel's environment variables and
+redeploy the app.
