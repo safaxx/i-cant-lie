@@ -54,20 +54,22 @@ const steps = [
 export default function Home() {
   return (
     <div className="overflow-hidden bg-[#faf9f6] text-zinc-950">
-      <section className="relative mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-7xl items-center gap-14 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:px-12">
+      <section className="relative mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-7xl items-center gap-14 px-5 pt-12 pb-16 sm:px-8 sm:pt-16 sm:pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:px-12">
         <div className="relative z-10 mx-auto w-full max-w-2xl lg:mx-0">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/80 px-3.5 py-2 text-sm font-medium text-zinc-700 shadow-sm">
-            <span className="size-2 rounded-full bg-lime-500" />
-            A little more real. A lot more you.
+          <div className="mb-7 inline-flex -rotate-2 items-center rounded-full bg-lime-300 px-4 py-2 text-sm font-bold text-zinc-950 shadow-md">
+            For the “I can’t lie...” moments
           </div>
           <h1 className="max-w-2xl text-5xl font-black leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
             Say the thing
             <br />
             <span className="relative inline-block">
-              you mean.
+              you mean
               <span className="absolute -bottom-1 left-0 -z-10 h-3 w-full -rotate-2 rounded-full bg-lime-300 sm:h-4" />
             </span>
           </h1>
+          <p className="mt-5 text-lg font-semibold tracking-tight text-zinc-800 sm:text-xl">
+            but, anonymously.
+          </p>
           <p className="mt-7 max-w-xl text-lg leading-8 text-zinc-600 sm:text-xl">
             A secret compliment. A long-kept crush. A question you’ve always
             wanted to ask. Send the honest thing, anonymously.
