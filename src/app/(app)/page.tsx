@@ -59,7 +59,7 @@ export default function Home() {
           <div className="mb-7 inline-flex -rotate-2 items-center rounded-full bg-lime-300 px-4 py-2 text-sm font-bold text-zinc-950 shadow-md">
             For the “I can’t lie...” moments
           </div>
-          <h1 className="max-w-2xl text-5xl font-black leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+          <h1 className="font-display max-w-2xl text-5xl font-black leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
             Say the thing
             <br />
             <span className="relative inline-block">
@@ -148,14 +148,14 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-lime-700">
               How it works
             </p>
-            <h2 className="mt-4 max-w-md text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="font-display mt-4 max-w-md text-3xl font-bold tracking-tight sm:text-4xl">
               Easy to share.
               <br />
               Hard to forget.
             </h2>
             <p className="mt-4 max-w-md leading-7 text-zinc-600">
               Give people a way to say what they really think, without making
-              it a whole thing.
+              it a big deal.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -186,7 +186,7 @@ export default function Home() {
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-lime-700">
             Your turn
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="font-display mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Ready for the honest stuff?
           </h2>
           <p className="mt-3 max-w-xl leading-7 text-zinc-600">
