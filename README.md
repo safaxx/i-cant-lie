@@ -22,10 +22,3 @@ An anonymous messaging app for sharing honest notes, compliments, confessions, a
 - AI-generated suggestions spanning confessions, compliments, and questions
 - Responsive landing, authentication, and dashboard experiences
 
-## Verification email setup
-
-Set `GMAIL_USER` to the Gmail address used to send verification emails and
-`GMAIL_APP_PASSWORD` to an app password generated for that account. Google
-requires 2-Step Verification to create an app password; do not use your regular
-Gmail password. Configure both values in Vercel's environment variables and
-redeploy the app.
